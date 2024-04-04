@@ -40,7 +40,7 @@ async def like_post(post_id):
 @app.route('/board/dislike_post/<int:post_id>', methods=['POST'])
 async def dislike_post(post_id):
     '''
-    post_id 추천 수 증가
+    post_id 추천 수 감소
     '''
     db.dislike_post(post_id)
     return jsonify({"message": "Post disliked successfully"}), 200

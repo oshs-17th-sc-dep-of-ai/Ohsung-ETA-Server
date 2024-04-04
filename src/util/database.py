@@ -7,13 +7,13 @@ class Database:
 
     def create_table(self):
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS posts (
-                              post_id  INTEGER PRIMARY KEY AUTOINCREMENT,
-                              board_id INT NOT NULL,
-                              likes    INT DEFAULT 0,
-                              dislikes INT DEFAULT 0,
-                              title    TEXT NOT NULL,
-                              content  TEXT NOT NULL,
-                              );''')
+                            post_id  INTEGER PRIMARY KEY AUTOINCREMENT,
+                            board_id INT NOT NULL,
+                            likes    INT DEFAULT 0,
+                            dislikes INT DEFAULT 0,
+                            title    TEXT NOT NULL,
+                            content  TEXT NOT NULL,
+                            );''')
         self.conn.commit()
 
     def write_post(self, board_id, title, content):
