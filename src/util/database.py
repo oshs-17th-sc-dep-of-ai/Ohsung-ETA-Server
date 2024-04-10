@@ -19,23 +19,23 @@ class Database:
         self.conn.commit()
 
     def write_post(self, board_id, user_id, title, content):
-        self.cursor.execute('''INSERT INTO posts (board_id, user_id, title, content, posted_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)''', (board_id, user_id, title, content))
+        self.cursor.execute("INSERT INTO posts (board_id, user_id, title, content, posted_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)", (board_id, user_id, title, content))
         self.conn.commit()
 
-    def get_popular_posts(self):
-        self.cursor.execute('''SELECT * FROM posts ORDER BY likes DESC''')
+    def get_popular_posts(self, board_id):
+        self.cursor.execute("SELECT * FROM posts WHERE board_id = ? ORDER BY likes DESC", (board_id))
         return self.cursor.fetchall()
-
+    
     def like_post(self, post_id):
-        self.cursor.execute('''UPDATE posts SET likes = likes + 1 WHERE post_id = ?''', (post_id))
+        self.cursor.execute("UPDATE posts SET likes = likes + 1 WHERE post_id = ?", (post_id))
         self.conn.commit()
 
     def dislike_post(self, post_id):
-        self.cursor.execute('''UPDATE posts SET dislikes = dislikes + 1 WHERE post_id = ?''', (post_id))
+        self.cursor.execute("UPDATE posts SET dislikes = dislikes + 1 WHERE post_id = ?", (post_id))
         self.conn.commit()
 
-    def get_post(self, board_id, post_id):
-        self.cursor.execute('''SELECT * FROM posts WHERE board_id = ? AND post_id = ?''', (board_id, post_id))
+    def get_post_by_id(self, board_id, post_id):
+        self.cursor.execute("SELECT * FROM posts WHERE board_id = ? AND post_id = ?", (board_id, post_id))
         post = self.cursor.fetchone()
         if post:
             return {
@@ -50,3 +50,13 @@ class Database:
             }
         else:
             return None
+
+    def update_post(self, board_id, post_id, title, content):
+        self.cursor.execute("UPDATE posts SET title = ?, content = ? WHERE board_id = ? AND post_id = ?", (title, content, board_id, post_id))
+        if self.cursor.rowcount > 0:
+            self.conn.commit()
+
+    def delete_post(self, board_id, post_id):
+        self.cursor.execute("DELETE FROM posts WHERE board_id = ? AND post_id = ?", (board_id, post_id))
+        if self.cursor.rowcount > 0:
+            self.conn.commit()
