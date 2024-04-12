@@ -47,7 +47,7 @@ async def write_post(board_id):
     else:
         return jsonify({"error": "User ID, title, and content are required"}), 400
 
-@app.route('/board/<int:board_id>/<int:post_id>/like_post', methods=['PATCH'])
+@app.route('/board/<int:board_id>/<int:post_id>/like', methods=['PUT'])
 def like_post(board_id, post_id):
     '''
     post_id 추천 수 증가
@@ -59,7 +59,7 @@ def like_post(board_id, post_id):
     else:
         return jsonify({"error": "Post not found"}), 404
 
-@app.route('/board/<int:board_id>/<int:post_id>/dislike_post', methods=['PATCH'])
+@app.route('/board/<int:board_id>/<int:post_id>/dislike', methods=['PUT'])
 def dislike_post(board_id, post_id):
     '''
     post_id 추천 수 감소
