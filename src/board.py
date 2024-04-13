@@ -3,7 +3,7 @@ from util.database import Database
 
 app = Sanic(__name__)
 db = Database('database.db')
-db.create_table()
+db.create_posts_table()
 
 @app.route('/board/<int:board_id>/<int:post_id>', methods=['GET', 'PATCH', 'DELETE'])
 async def post_details(request, board_id, post_id):
