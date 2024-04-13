@@ -42,17 +42,17 @@ async def login(request):
     else:
         return response.json({"error": "Username and password are required"}, status=400)
 
-@app.route('/user/logout/<int:user_id>', methods=['POST'])
-async def logout(request, user_id):
+@app.route('/user/logout', methods=['POST'])
+async def logout(request):
     '''
     로그아웃
     '''
     session_data = request['session']
-    if str(user_id) in session_data:
-        del session_data[str(user_id)]
-        return response.json({"message": f"Logout successful for user {user_id}"})
+    if 'user_id' in session_data:
+        del session_data['user_id']
+        return response.json({"message": "Logout successful"})
     else:
-        return response.json({"error": f"User {user_id} is already logged out"}, status=400)
+        return response.json({"error": "You are already logged out"}, status=400)
 
 @app.route('/user/profile/<int:user_id>', methods=['GET', 'PATCH'])
 async def profile(request, user_id):
