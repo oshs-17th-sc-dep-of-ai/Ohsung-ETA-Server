@@ -1,7 +1,9 @@
 from sanic import Sanic, response
+from sanic_session import Session, InMemorySessionInterface
 from util.database import Database
 
 app = Sanic(__name__)
+session = Session(app, interface=InMemorySessionInterface())
 db = Database('database.db')
 db.create_users_table()
 
@@ -33,20 +35,24 @@ async def login(request):
     if username and password:
         user_id = db.authenticate_user(username, password)
         if user_id:
-            # TODO : 로그인 처리
+            request['session']['user_id'] = user_id
             return response.json({"user_id": user_id, "message": "Login successful"})
         else:
             return response.json({"error": "Invalid username or password"}, status=401)
     else:
         return response.json({"error": "Username and password are required"}, status=400)
 
-@app.route('/user/logout', methods=['POST'])
-async def logout(request):
+@app.route('/user/logout/<int:user_id>', methods=['POST'])
+async def logout(request, user_id):
     '''
     로그아웃
     '''
-    # TODO : 로그아웃 처리
-    return response.json({"message": "Logout successful"})
+    session_data = request['session']
+    if str(user_id) in session_data:
+        del session_data[str(user_id)]
+        return response.json({"message": f"Logout successful for user {user_id}"})
+    else:
+        return response.json({"error": f"User {user_id} is already logged out"}, status=400)
 
 @app.route('/user/profile/<int:user_id>', methods=['GET', 'PATCH'])
 async def profile(request, user_id):
